@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import UserRegister from '../components/UserRegister.vue';
 import UserLogin from '../components/UserLogin.vue';
-import UserDashboard from '../components/UserDashboard.vue';
-import AddExpense from '../pages/AddExpense.vue'; // Importimi i komponentit AddExpense
-import AddIncome from '../pages/AddIncome.vue'; // Importimi i komponentit AddIncome
+import UserDashboard from '../pages/UserDashboard.vue';
+import AddExpense from '../pages/AddExpense.vue';
+import AddIncome from '../pages/AddIncome.vue'; 
+import IncomeExpenseChart from '../pages/IncomeExpenseChart.vue';
 
 const routes = [
   {
@@ -31,6 +32,11 @@ const routes = [
     path: '/add-income',
     name: 'AddIncome',
     component: AddIncome, 
+  },
+  {
+    path: '/chart',
+    name: 'IncomeExpenseChart',
+    component: IncomeExpenseChart,
   },
   {
     path: '/',
