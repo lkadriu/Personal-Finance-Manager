@@ -1,7 +1,6 @@
 <template>
   <div class="dashboard">
     <h1 class="text-center">Dashboard</h1>
-    <p class="welcome-message">Welcome, {{ user.name }}!</p>
 
     <!-- Seksioni për shpenzimet dhe të ardhurat -->
     <div class="cards-container">
@@ -48,32 +47,46 @@ export default {
     return {
       user: {},
       expenses: [],
-      incomes: []
+      incomes: [],
+      sessionTimeout: 30 * 60 * 1000 // 30 minuta në milisekonda
     };
   },
   computed: {
     totalExpenses() {
-      return this.expenses.reduce((sum, expense) => sum + parseFloat(expense.amount), 0).toFixed(2); // Calculate total expenses
+      return this.expenses.reduce((sum, expense) => sum + parseFloat(expense.amount), 0).toFixed(2);
     },
     totalIncomes() {
-      return this.incomes.reduce((sum, income) => sum + parseFloat(income.amount), 0).toFixed(2); // Calculate total incomes
+      return this.incomes.reduce((sum, income) => sum + parseFloat(income.amount), 0).toFixed(2);
     }
   },
   created() {
-    this.fetchUserData();
+    this.startSessionTimeout();
     this.fetchExpenses();
     this.fetchIncomes();
   },
   methods: {
-    async fetchUserData() {
-      const userId = localStorage.getItem('userId');
-      if (userId) {
-        // Simulate fetching user data (Replace with actual data fetching)
-        this.user = {
-          id: userId,
-          name: 'Leart Kadriu' // Replace with actual user data fetching
-        };
+    startSessionTimeout() {
+      const loginTime = localStorage.getItem('loginTime');
+      const currentTime = new Date().getTime();
+      
+      if (!loginTime) {
+        // Vendosim kohën aktuale si login time nëse nuk ekziston
+        localStorage.setItem('loginTime', currentTime);
+      } else if (currentTime - loginTime > this.sessionTimeout) {
+        // Nëse ka kaluar sesioni, dërgojmë përdoruesin tek faqja e loginit
+        this.logout();
+      } else {
+        // Përndryshe, caktojmë një timer që do të ridrejtojë pas periudhës së mbetur
+        setTimeout(() => {
+          this.logout();
+        }, this.sessionTimeout - (currentTime - loginTime));
       }
+    },
+    logout() {
+      alert("Your session has expired. Please log in again.");
+      localStorage.removeItem('userId');
+      localStorage.removeItem('loginTime');
+      this.$router.push('/login');
     },
     async fetchExpenses() {
       const userId = localStorage.getItem('userId');
@@ -110,6 +123,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 .dashboard {

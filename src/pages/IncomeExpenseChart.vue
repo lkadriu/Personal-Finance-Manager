@@ -18,13 +18,38 @@
         chart: null,
         incomes: [],
         expenses: [],
+        sessionTimeout: 30 * 60 * 1000 // 30 minuta në milisekonda
       };
     },
     async created() {
       await this.fetchData();
+      this.startSessionTimeout();
       this.renderChart();
     },
     methods: {
+    startSessionTimeout() {
+      const loginTime = localStorage.getItem('loginTime');
+      const currentTime = new Date().getTime();
+      
+      if (!loginTime) {
+        // Vendosim kohën aktuale si login time nëse nuk ekziston
+        localStorage.setItem('loginTime', currentTime);
+      } else if (currentTime - loginTime > this.sessionTimeout) {
+        // Nëse ka kaluar sesioni, dërgojmë përdoruesin tek faqja e loginit
+        this.logout();
+      } else {
+        // Përndryshe, caktojmë një timer që do të ridrejtojë pas periudhës së mbetur
+        setTimeout(() => {
+          this.logout();
+        }, this.sessionTimeout - (currentTime - loginTime));
+      }
+    },
+    logout() {
+      alert("Your session has expired. Please log in again.");
+      localStorage.removeItem('userId');
+      localStorage.removeItem('loginTime');
+      this.$router.push('/login');
+    },
       async fetchData() {
         const userId = localStorage.getItem('userId');
   

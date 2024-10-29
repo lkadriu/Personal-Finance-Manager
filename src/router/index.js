@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import UserRegister from '../components/UserRegister.vue';
 import UserLogin from '../components/UserLogin.vue';
+import HomePage from '../pages/HomePage.vue';
 import UserDashboard from '../pages/UserDashboard.vue';
 import AddExpense from '../pages/AddExpense.vue';
 import AddIncome from '../pages/AddIncome.vue'; 
@@ -17,6 +18,11 @@ const routes = [
     path: '/login',
     name: 'UserLogin',
     component: UserLogin,
+  },
+  {
+    path: '/home',
+    name: 'HomePage',
+    component: HomePage,
   },
   {
     path: '/dashboard',
