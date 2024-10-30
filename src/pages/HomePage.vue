@@ -1,6 +1,6 @@
-<template>
+<template> 
     <div class="homepage">
-      <header>
+      <header class="homepage__header">
         <h1>Welcome to Your Personal Finance Manager</h1>
         <p>Manage your finances, track expenses and income, and create monthly budgets effortlessly.</p>
       </header>
@@ -29,76 +29,78 @@
   <script>
   export default {
     name: 'HomePage',
+    data() {
+      return {
+        sessionTimeout: 30 * 60 * 1000, // 30 minutes in milliseconds
+      };
+    },
+    created() {
+      this.startSessionTimeout();
+    },
+    methods: {
+      startSessionTimeout() {
+        const loginTime = localStorage.getItem('loginTime');
+        const currentTime = new Date().getTime();
+        
+        if (!loginTime) {
+          // Set the current time as login time if not already set
+          localStorage.setItem('loginTime', currentTime);
+        } else if (currentTime - loginTime > this.sessionTimeout) {
+          // If session expired, logout
+          this.logout();
+        } else {
+          // Set a timer to logout when session expires
+          setTimeout(this.logout, this.sessionTimeout - (currentTime - loginTime));
+        }
+      },
+      logout() {
+        alert("Your session has expired. Please log in again.");
+        localStorage.removeItem('userId');
+        localStorage.removeItem('loginTime');
+        this.$router.push('/login');
+      }
+    }
   };
   </script>
   
   <style scoped>
-  * {
-    box-sizing: border-box;
+  .homepage {
+    text-align: center;
+    padding: 2rem;
   }
-  
-  body {
-    font-family: Arial, sans-serif;
+  .homepage__header h1 {
+    font-size: 2.5rem;
     color: #333;
   }
-  
-  .homepage {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px;
-    background-color: #f5f7fa;
-  }
-  
-  header {
-    text-align: center;
-    max-width: 700px;
-    margin-bottom: 40px;
-  }
-  
-  header h1 {
-    font-size: 36px;
-    margin-bottom: 10px;
-    color: #3a7afe;
-  }
-  
-  header p {
-    font-size: 18px;
+  .homepage__header p {
+    font-size: 1.2rem;
     color: #666;
+    margin-bottom: 2rem;
   }
-  
   .features {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 1rem;
     justify-content: center;
   }
-  
   .feature {
-    width: 200px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #f0f0f0;
+    padding: 1.5rem;
+    width: 250px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    text-align: center;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   }
-  
   .feature:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 15px rgba(58, 122, 254, 0.3);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
-  
   .feature h2 {
-    font-size: 22px;
-    color: #3a7afe;
-    margin-bottom: 10px;
+    color: #007bff;
+    font-size: 1.5rem;
   }
-  
   .feature p {
-    color: #666;
-    font-size: 15px;
+    color: #333;
   }
   </style>
   
